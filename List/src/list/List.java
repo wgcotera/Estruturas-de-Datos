@@ -6,29 +6,30 @@ package list;
  */
 public interface List<E> {
     
-    public boolean addFirst(E e);
+    boolean addFirst(E e);
     
-    public boolean addLast(E e);
+    boolean addLast(E e);
     
-    public void add(int index, E e);
+    void add(int index, E e);
     
-    public void clear();
+    void clear();
     
-    public E get(int index);
+    E get(int index);
     
-    public boolean isEmpty();
+    boolean isEmpty();
     
-    public E removeFirst();
+    E removeFirst();
     
-    public E removeLast();
+    E removeLast();
     
-    public E remove(int index);
+    E remove(int index);
     
-    public E set(int index, E e);
+    E set(int index, E e);
     
-    public int size();
+    int size();
 
     @Override
-    public String toString();   
+    String toString();   
     
+   boolean keepOnly(int from, int to); 
 }
