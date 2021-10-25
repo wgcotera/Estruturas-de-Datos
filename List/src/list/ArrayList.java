@@ -15,12 +15,6 @@ public class ArrayList<E> implements List<E> {
         this.effectiveSize = 0;
     }
     
-    public ArrayList(int c) {
-        this.elements = (E[]) (new Object[c]);
-        this.effectiveSize = 0;
-        this.capacity = c;
-    }
-
     //DONE
     private boolean isFull() {
         return effectiveSize == capacity;
@@ -28,17 +22,17 @@ public class ArrayList<E> implements List<E> {
 
     //DONE
     private void addCapacity() {
-        E[] tmp = (E[]) (new Object[capacity * 2]);
-        for (int i = 0; i < effectiveSize; i++) {
-            tmp[i] = elements[i];
+        E[] tmp = (E[]) (new Object[this.capacity * 2]);
+        for (int i = 0; i < this.effectiveSize; i++) {
+            tmp[i] = this.elements[i];
         }
-        elements = tmp;
-        capacity = capacity * 2;
+        this.elements = tmp;
+        this.capacity = this.capacity * 2;
     }
     
     //DONE
-    private void checkIndex(int index) {
-        if(index < 0 || index >= effectiveSize) {
+    private void checkIndex(final int index) {
+        if(index < 0 || index >= this.effectiveSize) {
             throw new ArrayIndexOutOfBoundsException(index);
         }
     }
@@ -49,16 +43,16 @@ public class ArrayList<E> implements List<E> {
         if (element == null) {
             return false;
         } else if (isEmpty()) {
-            elements[effectiveSize++] = element;
+            this.elements[this.effectiveSize++] = element;
             return true;
         } else if (isFull()) {
             addCapacity();
         }
-        for (int i = effectiveSize - 1; i >= 0; i--) {
-            elements[i + 1] = elements[i];
+        for (int i = this.effectiveSize - 1; i >= 0; i--) {
+            this.elements[i + 1] = this.elements[i];
         }
-        elements[0] = element;
-        effectiveSize++;
+        this.elements[0] = element;
+        this.effectiveSize++;
         return true;
     }
 
@@ -70,7 +64,7 @@ public class ArrayList<E> implements List<E> {
         } else if (isFull()) {
             addCapacity();
         }
-        elements[effectiveSize++] = element;
+        this.elements[this.effectiveSize++] = element;
         return true;
     }
 
@@ -81,54 +75,55 @@ public class ArrayList<E> implements List<E> {
         if (isFull()) {
             addCapacity();
         }
-        for (int i = effectiveSize - 1; i >= index; i--) {
-            elements[i + 1] = elements[i];
+        for (int i = this.effectiveSize - 1; i >= index; i--) {
+            this.elements[i + 1] = this.elements[i];
         }
-        elements[index] = element;
-        effectiveSize++;
+        this.elements[index] = element;
+        this.effectiveSize++;
     }
 
     //DONE
     @Override
     public void clear() {
-        for (int i = 0; i < effectiveSize; i++) {
-            elements[i] = null;
+        for (int i = 0; i < this.effectiveSize; i++) {
+            this.elements[i] = null;
         }
-        effectiveSize = 0;
+        this.effectiveSize = 0;
     }
 
     //DONE
     @Override
     public E get(final int index) {
         checkIndex(index);
-        return elements[index];
+        return this.elements[index];
     }
 
     //DONE
     @Override
     public boolean isEmpty() {
-        return effectiveSize == 0;
+        return this.effectiveSize == 0;
     }
     
     //DONE
     @Override
     public E removeFirst() {
         checkIndex(0);
-        E firstElement = elements[0];
-        for (int i = 0 ; i < effectiveSize ; i++) {
-            elements[i] = elements[i+1];
+        E firstElement = this.elements[0];
+        for (int i = 0 ; i < this.effectiveSize ; i++) {
+            this.elements[i] = this.elements[i+1];
         }
-        effectiveSize--;
+        this.effectiveSize--;      
+        this.elements[this.effectiveSize] = null;
         return firstElement;
     }
     
     //DONE
     @Override
     public E removeLast() {
-        checkIndex(effectiveSize-1);
-        E lastElement = elements[effectiveSize-1];
-        elements[effectiveSize-1] = null;
-        effectiveSize--;
+        checkIndex(this.effectiveSize-1);
+        E lastElement = this.elements[this.effectiveSize-1];
+        this.effectiveSize--;
+        this.elements[this.effectiveSize] = null;
         return lastElement;
     }
 
@@ -136,11 +131,12 @@ public class ArrayList<E> implements List<E> {
     @Override
     public E remove(final int index) {
         checkIndex(index);
-        E removedElement = elements[index];
-        for (int i = index ; i < effectiveSize - 1 ; i++) {
-            elements[i] = elements[i + 1];
+        E removedElement = this.elements[index];
+        for (int i = index ; i < this.effectiveSize - 1 ; i++) {
+            this.elements[i] = this.elements[i + 1];
         }
-        effectiveSize--;
+        this.effectiveSize--;
+        this.elements[this.effectiveSize] = null;
         return removedElement;
     }
 
@@ -148,32 +144,55 @@ public class ArrayList<E> implements List<E> {
     @Override
     public E set(final int index, E element) {
         checkIndex(index);
-        elements[index] = element;
+        this.elements[index] = element;
         return element;
     }
 
     //DONE
     @Override
     public int size() {
-        return effectiveSize;
+        return this.effectiveSize;
     }
 
     //DONE
     @Override
     public String toString() {
         String s = "";
-        for (int i = 0; i < effectiveSize; i++) {
-            s += elements[i].toString() + " ";
+        for (int i = 0; i < this.effectiveSize; i++) {
+            s += this.elements[i].toString() + " ";
         }
         return s;
     }
     
-        //HECHO SIN USAR CASTING
+    // DONE
+    @Override
+    public List<E> copy() {
+        List<E> copy = new ArrayList<>();
+        for (int i = 0 ; i < this.effectiveSize ; i++) {
+            copy.addLast(this.elements[i]);
+        }
+        return copy;
+    }
+    
+    //DONE
+    @Override
+    public void reverse() {
+        for (int i = 0, j = this.effectiveSize - 1; i < j ; i++, j--) {
+            E tmp = this.elements[j];
+            this.elements[j] = this.elements[i];
+            this.elements[i] = tmp;
+        }
+    }
+    
+    //DONE 
+    @Override
     public boolean keepOnly(final int from, final int to) {
-        if (from > 0 && to > 0 && from <= to && to <= effectiveSize) {
+        checkIndex(from - 1);
+        checkIndex(to-1);
+        if ( from <= to ) {
             final int diff = to - from;
             for (int i = 0, p = from ; i <= diff ; i++, p++ ) {
-                elements[i] = elements[p-1];
+                this.elements[i] = this.elements[p-1];
             }
             for (int i = diff + 1 ; i < effectiveSize ; i++) {
                 elements[i] = null;
@@ -183,19 +202,22 @@ public class ArrayList<E> implements List<E> {
         }
         return false;
     }
-
-    //HECHO USANDO CASTING
-//    public boolean keepOnly(int from, int to) {
-//        E[] tmp = (E[]) (new Object[capacity]);
-//        if (from <= effectiveSize && from > 0 && to <= effectiveSize && to > 0 && from <= to) {
-//            int j = 0;
-//            for (int i = (from - 1); i == to - 1; i--, j++) {
-//                tmp[j++] = elements[i];
-//            }
-//            elements = tmp;
-//            effectiveSize = j;
-//            return true;
-//        }
-//        return false;
-//    }
+    
+    //DONE
+    @Override
+     public void insertAt(int index, List<E> collection) {
+         checkIndex(index);
+         int sizeCollection = collection.size();
+         for(int j = 0 ; j < sizeCollection; j++ ) {
+             if (isFull()) {
+                 addCapacity();
+             }
+             E element = collection.get(j);
+             for (int k = effectiveSize - 1; k >= index; k--) {
+                 elements[k + 1] = elements[k];
+             }
+             elements[index++] = element;
+             effectiveSize++;
+         }
+     }
 }

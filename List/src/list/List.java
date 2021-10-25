@@ -32,4 +32,10 @@ public interface List<E> {
     String toString();   
     
    boolean keepOnly(int from, int to); 
+   
+   List<E> copy();
+   
+   void reverse();
+   
+   public void insertAt(int index, List<E> collection);
 }
