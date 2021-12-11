@@ -3,8 +3,9 @@ package list;
 /**
  *
  * @author wgcotera
+ * @param <E>
  */
-public interface List<E> {
+public interface List<E> extends Iterable<E> {
     
     boolean addFirst(E e);
     
@@ -37,5 +38,7 @@ public interface List<E> {
    
    void reverse();
    
-   public void insertAt(int index, List<E> collection);
+   void insertAt(int index, List<E> collection);
+   
+   
 }

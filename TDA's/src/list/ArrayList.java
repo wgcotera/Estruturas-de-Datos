@@ -1,5 +1,8 @@
 package list;
 
+import static java.lang.Math.floor;
+import java.util.Iterator;
+
 /**
  *
  * @author wgcotera
@@ -17,7 +20,7 @@ public class ArrayList<E> implements List<E> {
     
     //DONE
     private boolean isFull() {
-        return effectiveSize == capacity;
+        return this.effectiveSize == this.capacity;
     }
 
     //DONE
@@ -33,7 +36,7 @@ public class ArrayList<E> implements List<E> {
     //DONE
     private void checkIndex(final int index) {
         if(index < 0 || index >= this.effectiveSize) {
-            throw new ArrayIndexOutOfBoundsException(index);
+            throw new IndexOutOfBoundsException(index);
         }
     }
     
@@ -144,8 +147,9 @@ public class ArrayList<E> implements List<E> {
     @Override
     public E set(final int index, E element) {
         checkIndex(index);
+        E oldElement = this.elements[index];
         this.elements[index] = element;
-        return element;
+        return oldElement;
     }
 
     //DONE
@@ -194,10 +198,10 @@ public class ArrayList<E> implements List<E> {
             for (int i = 0, p = from ; i <= diff ; i++, p++ ) {
                 this.elements[i] = this.elements[p-1];
             }
-            for (int i = diff + 1 ; i < effectiveSize ; i++) {
-                elements[i] = null;
+            for (int i = diff + 1 ; i < this.effectiveSize ; i++) {
+                this.elements[i] = null;
             }
-            effectiveSize = diff + 1;
+            this.effectiveSize = diff + 1;
             return true;
         }
         return false;
@@ -213,11 +217,30 @@ public class ArrayList<E> implements List<E> {
                  addCapacity();
              }
              E element = collection.get(j);
-             for (int k = effectiveSize - 1; k >= index; k--) {
-                 elements[k + 1] = elements[k];
+             for (int k = this.effectiveSize - 1; k >= index; k--) {
+                 this.elements[k + 1] = this.elements[k];
              }
-             elements[index++] = element;
-             effectiveSize++;
+             this.elements[index++] = element;
+             this.effectiveSize++;
          }
      }
+
+    @Override
+    public Iterator<E> iterator() {
+            Iterator<E> iterator = new Iterator<E>() {
+                int cursor;
+                @Override
+                public boolean hasNext() {
+                    return cursor < effectiveSize;
+                }
+
+                @Override
+                public E next() {
+                    E e =  elements[cursor];
+                    cursor++;
+                    return e;
+                }
+            };
+            return iterator;
+    }
 }
