@@ -1,9 +1,6 @@
-package Tree;
+package Tree.BinaryTree;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class BinaryTreeTest {
     public static void main(String[] args) {
@@ -506,21 +503,37 @@ public class BinaryTreeTest {
          * PRUEBAS
          * ****************************************************************** */
 
-        String string = "Hola a   todos      por     hoy        pas";
-        String[] ls = string.split("\s+");
-        System.out.println(Arrays.toString(ls));
+//        String string = "Hola a   todos      por     hoy        pas";
+//        String[] ls = string.split("\s+");
+//        System.out.println(Arrays.toString(ls));
+//
+//        BinaryTree<String> exp = BinaryTree.getExpressionTree("A B * C D * - H +");
+//        System.out.println(exp.getContent());
+//        System.out.println(exp.getLeft().getContent() + " " + exp.getRight().getContent());
+//        System.out.println(exp.getLeft().getLeft().getContent()+" "+ exp.getLeft().getRight().getContent());
+//        System.out.println(exp.getLeft().getLeft().getLeft().getContent()+" "+ exp.getLeft().getLeft().getRight().getContent()+" "+exp.getLeft().getRight().getLeft().getContent()+" "+exp.getLeft().getRight().getRight().getContent());
+//
+//        BinaryTree<String> expT = BinaryTree.getExpressionTree("30 3 + 5 -");
+//        System.out.println(expT.getContent());
+//        System.out.println(expT.getLeft().getContent() + " " + expT.getRight().getContent());
+//
+//        System.out.println(BinaryTree.evaluateExpressionTree(expT));
+        final var map = BinaryTree.getFrequencies("ABACCDA");
 
-        BinaryTree<String> exp = BinaryTree.getExpressionTree("A B * C D * - H +");
-        System.out.println(exp.getContent());
-        System.out.println(exp.getLeft().getContent() + " " + exp.getRight().getContent());
-        System.out.println(exp.getLeft().getLeft().getContent()+" "+ exp.getLeft().getRight().getContent());
-        System.out.println(exp.getLeft().getLeft().getLeft().getContent()+" "+ exp.getLeft().getLeft().getRight().getContent()+" "+exp.getLeft().getRight().getLeft().getContent()+" "+exp.getLeft().getRight().getRight().getContent());
+        BinaryTree<HuffmanInfo> huffmanTree = BinaryTree.buildHuffmanTree(map);
+        Map<Character, String> map0 = new LinkedHashMap<>();
+        Map<Character, String> map1 = new LinkedHashMap<>();
+        Map<String, Character> map2 = new LinkedHashMap<>();
 
-        BinaryTree<String> expT = BinaryTree.getExpressionTree("30 3 +");
-        System.out.println(expT.getContent());
-        System.out.println(expT.getLeft().getContent() + " " + expT.getRight().getContent());
-
-        System.out.println(BinaryTree.evaluateExpressionTree(expT));
+        List<Character> characters = Arrays.asList('A','B','C');
+        System.out.println("\n \n \n");
+        BinaryTree.huffmanCodes(huffmanTree, map0,"");
+//        System.out.println(map1);
+        BinaryTree.getHuffmanCodes(characters, huffmanTree,  map1, map2);
+        System.out.println("Codigos Huffman Completos del Arbol: "+map0);
+        System.out.println("Lista de caracteres"+characters);
+        System.out.println(map1);
+        System.out.println(map2);
     }
 
 }
