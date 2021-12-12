@@ -285,7 +285,7 @@ public class BinaryTree<T> {
                     nodesContent.add(null);
                 }
                 // Imprimo el subArbol con sus hijos
-                System.out.print("Left: "+ nodesContent.get(0) + " <--- Root: " + nodesContent.get(1) + " ---> Right: " + nodesContent.get(2) + "\t");
+                System.out.print("(L: "+ nodesContent.get(0) + ") <-- (R: " + nodesContent.get(1) + ") --> (R: " + nodesContent.get(2) + ")\t");
             }
             // Agrego un salto de linea para proceder a imprimir el siguiente nivel del arbol
             System.out.println("\n");
