@@ -534,6 +534,9 @@ public class BinaryTreeTest {
         System.out.println("Lista de caracteres"+characters);
         System.out.println(map1);
         System.out.println(map2);
+        System.out.println("Codificando 'ABC': " + BinaryTree.encode("ABC", map1));
+        System.out.println("Decodificando '010011': " + BinaryTree.decode("010011", map2));
+        binaryTree3.printTree();
     }
 
 }

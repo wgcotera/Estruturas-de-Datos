@@ -257,13 +257,60 @@ public class BinaryTree<T> {
         return descendants;
     }
 
+    public void printTree() {
+        Queue<BinaryTree<T>> tmp = new LinkedList<>();
+        tmp.offer(this);
+
+        while(!tmp.isEmpty()) {
+            Queue<BinaryTree<T>> tmp1 = new LinkedList<>();
+
+            // Vaceo la Pila  que contiene arboles cuyas raices tienen el mismo nivel
+            while(!tmp.isEmpty()) {
+                List<T> nodesContent = new ArrayList<>();
+
+                BinaryTree<T> subTree = tmp.poll();
+                tmp1.offer(subTree);
+
+                if (subTree.getLeft() != null) {
+                    nodesContent.add(subTree.getLeft().getContent());
+                } else {
+                    nodesContent.add(null);
+                }
+
+                nodesContent.add(subTree.getContent());
+
+                if (subTree.getRight() != null) {
+                    nodesContent.add(subTree.getRight().getContent());
+                } else {
+                    nodesContent.add(null);
+                }
+                // Imprimo el subArbol con sus hijos
+                System.out.print("Left: "+ nodesContent.get(0) + " <--- Root: " + nodesContent.get(1) + " ---> Right: " + nodesContent.get(2) + "\t");
+            }
+            // Agrego un salto de linea para proceder a imprimir el siguiente nivel del arbol
+            System.out.println("\n");
+
+            while (!tmp1.isEmpty()) {
+                BinaryTree<T> subTree = tmp1.poll();
+
+                if (subTree.getLeft() != null) {
+                    tmp.offer(subTree.getLeft());
+                }
+                if (subTree.getRight() != null) {
+                    tmp.offer(subTree.getRight());
+                }
+            }
+        }
+
+    }
+
     /* *********************************************************************
      * Static Methods
      ******************************************************************** */
 
     public static BinaryTree<String> getExpressionTree(String posfixExpression) {
 
-        String[] elements = posfixExpression.split("\s+");
+        String[] elements = posfixExpression.split("\\s+");
 
         Deque<BinaryTree<String>> operands = new ArrayDeque<>();
 
@@ -299,18 +346,13 @@ public class BinaryTree<T> {
     }
 
     private static double operate(double operand1, double operand2, String operator) {
-        switch (operator) {
-            case "/":
-                return operand1/operand2;
-            case "*":
-                return operand1*operand2;
-            case "+":
-                return operand1+operand2;
-            case "-" :
-                return operand1-operand2;
-            default:
-                return Math.pow(operand1, operand2);
-        }
+        return switch (operator) {
+            case "/" -> operand1 / operand2;
+            case "*" -> operand1 * operand2;
+            case "+" -> operand1 + operand2;
+            case "-" -> operand1 - operand2;
+            default -> Math.pow(operand1, operand2);
+        };
     }
 
 
@@ -736,14 +778,40 @@ public class BinaryTree<T> {
         huffmanCodes(huffmanTree.getRight(), map, bCode + "1");
     }
 
-    public static void getHuffmanCodes(List<Character> characters, BinaryTree<HuffmanInfo> huffmanTree,
-                                       Map<Character, String> map1, Map<String, Character> map2) {
+    public static void getHuffmanCodes(List<Character> charactersList, BinaryTree<HuffmanInfo> huffmanTree, Map<Character, String> map1, Map<String, Character> map2) {
         Map<Character, String> map = new LinkedHashMap<>();
         huffmanCodes(huffmanTree, map, "");
-        for (char character : characters) {
+        for (char character : charactersList) {
             String bCode = map.get(character);
             map1.put(character, bCode);
             map2.put(bCode, character);
         }
     }
+
+    /* EJERCICIO 4 */
+
+    public static String encode(String string, Map<Character, String> map) {
+        String bCode = "";
+        for (char character : string.toCharArray()) {
+            bCode += map.get(character);
+        }
+        return bCode;
+    }
+
+    /* EJERCICIO 5 */
+
+    public static String decode(String string, Map< String, Character> map) {
+        StringBuilder result = new StringBuilder();
+        String bCode = "";
+
+        for (char character : string.toCharArray()) {
+            bCode += character;
+            if (map.containsKey(bCode)) {
+                result.append(map.get(bCode));
+                bCode = "";
+            }
+        }
+        return result.toString();
+    }
+
 }
