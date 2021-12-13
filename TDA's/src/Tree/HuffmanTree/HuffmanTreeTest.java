@@ -2,10 +2,7 @@ package Tree.HuffmanTree;
 
 import Tree.BinaryTree.BinaryTree;
 
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class HuffmanTreeTest {
     public static void main(String[] args) {
@@ -16,7 +13,7 @@ public class HuffmanTreeTest {
         Map<Character, String> map1 = new LinkedHashMap<>();
         Map<String, Character> map2 = new LinkedHashMap<>();
 
-        List<Character> characters = Arrays.asList('A','B','C');
+        Set<Character> characters = new LinkedHashSet<>(Arrays.asList('A','B','C'));
         System.out.println("\n \n \n");
         HuffmanTree.huffmanCodes(huffmanTree, map0,"");
 //        System.out.println(map1);

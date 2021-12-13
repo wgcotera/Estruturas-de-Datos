@@ -36,6 +36,7 @@ public class HuffmanTree {
 
             String parentContent = left.getContent().getHContent() + right.getContent().getHContent();
             int parentFrequency = left.getContent().getFrequency() + right.getContent().getFrequency();
+
             BinaryTree<HuffmanInfo> parent = new BinaryTree<>(new HuffmanInfo(parentContent, parentFrequency));
             parent.setLeft(left);
             parent.setRight(right);
@@ -49,7 +50,7 @@ public class HuffmanTree {
 
     public static void huffmanCodes(BinaryTree<HuffmanInfo> huffmanTree, Map<Character, String> map, String bCode) {
 
-        if (huffmanTree.getLeft() == null && huffmanTree.getRight() == null) {
+        if (huffmanTree.isLeaf()) {
             map.put(huffmanTree.getContent().getHContent().charAt(0), bCode);
             return;
         }
@@ -58,7 +59,7 @@ public class HuffmanTree {
         huffmanCodes(huffmanTree.getRight(), map, bCode + "1");
     }
 
-    public static void getHuffmanCodes(List<Character> charactersList, BinaryTree<HuffmanInfo> huffmanTree, Map<Character, String> map1, Map<String, Character> map2) {
+    public static void getHuffmanCodes(Set<Character> charactersList, BinaryTree<HuffmanInfo> huffmanTree, Map<Character, String> map1, Map<String, Character> map2) {
         Map<Character, String> map = new LinkedHashMap<>();
         huffmanCodes(huffmanTree, map, "");
         for (char character : charactersList) {
@@ -71,24 +72,24 @@ public class HuffmanTree {
     /* EJERCICIO 4 */
 
     public static String encode(String string, Map<Character, String> map) {
-        String bCode = "";
+        StringBuilder strB = new StringBuilder();
         for (char character : string.toCharArray()) {
-            bCode += map.get(character);
+            strB.append(map.get(character));
         }
-        return bCode;
+        return strB.toString();
     }
 
     /* EJERCICIO 5 */
 
     public static String decode(String string, Map< String, Character> map) {
         StringBuilder result = new StringBuilder();
-        String bCode = "";
+        StringBuilder bCode = new StringBuilder();
 
         for (char character : string.toCharArray()) {
-            bCode += character;
-            if (map.containsKey(bCode)) {
-                result.append(map.get(bCode));
-                bCode = "";
+            bCode.append(character);
+            if (map.containsKey(bCode.toString())) {
+                result.append(map.get(bCode.toString()));
+                bCode.setLength(0);
             }
         }
         return result.toString();
