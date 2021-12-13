@@ -1,5 +1,8 @@
 package Tree.BinaryTree;
 
+import Tree.HuffmanTree.HuffmanInfo;
+import Tree.HuffmanTree.HuffmanTree;
+
 import java.util.*;
 
 public class BinaryTreeTest {
@@ -518,25 +521,7 @@ public class BinaryTreeTest {
 //        System.out.println(expT.getLeft().getContent() + " " + expT.getRight().getContent());
 //
 //        System.out.println(BinaryTree.evaluateExpressionTree(expT));
-        final var map = BinaryTree.getFrequencies("ABACCDA");
 
-        BinaryTree<HuffmanInfo> huffmanTree = BinaryTree.buildHuffmanTree(map);
-        Map<Character, String> map0 = new LinkedHashMap<>();
-        Map<Character, String> map1 = new LinkedHashMap<>();
-        Map<String, Character> map2 = new LinkedHashMap<>();
-
-        List<Character> characters = Arrays.asList('A','B','C');
-        System.out.println("\n \n \n");
-        BinaryTree.huffmanCodes(huffmanTree, map0,"");
-//        System.out.println(map1);
-        BinaryTree.getHuffmanCodes(characters, huffmanTree,  map1, map2);
-        System.out.println("Codigos Huffman Completos del Arbol: "+map0);
-        System.out.println("Lista de caracteres"+characters);
-        System.out.println(map1);
-        System.out.println(map2);
-        System.out.println("Codificando 'ABC': " + BinaryTree.encode("ABC", map1));
-        System.out.println("Decodificando '010011': " + BinaryTree.decode("010011", map2));
-        binaryTree3.printTree();
     }
 
 }

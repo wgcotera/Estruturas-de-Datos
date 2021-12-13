@@ -1,4 +1,4 @@
-package Tree.BinaryTree;
+package Tree.HuffmanTree;
 
 public class HuffmanInfo implements Comparable<HuffmanInfo>{
     private String hContent;
@@ -23,5 +23,10 @@ public class HuffmanInfo implements Comparable<HuffmanInfo>{
             return this.getFrequency() - other.getFrequency();
         else
             return this.getHContent().compareTo(other.getHContent());
+    }
+
+    @Override
+    public String toString() {
+        return "{" +hContent +": "+  frequency +"}" ;
     }
 }
