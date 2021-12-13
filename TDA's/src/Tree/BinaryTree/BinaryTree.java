@@ -346,13 +346,18 @@ public class BinaryTree<T> {
     }
 
     private static double operate(double operand1, double operand2, String operator) {
-        return switch (operator) {
-            case "/" -> operand1 / operand2;
-            case "*" -> operand1 * operand2;
-            case "+" -> operand1 + operand2;
-            case "-" -> operand1 - operand2;
-            default -> Math.pow(operand1, operand2);
-        };
+        switch (operator) {
+            case "/":
+                return operand1 / operand2;
+            case "*":
+                return operand1 * operand2;
+            case "+":
+                return operand1 + operand2;
+            case "-":
+                return operand1 - operand2;
+            default:
+                return Math.pow(operand1, operand2);
+        }
     }
 
 
