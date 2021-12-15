@@ -102,14 +102,30 @@ public class AVLTree <K extends Comparable<K>, V>{
         return newParent;
     }
 
-    private int getBalance(AVLTreeNode<K, V> node) {
-        if (node == null) {
-            return 0;
+    private AVLTreeNode<K, V> applyRotation(AVLTreeNode<K, V> node) {
+        int balance = balance(node);
+        if (balance > 1) {
+            if (balance(node.left) < 0) {
+                node.left = rotateLeft(node.left);
+            }
+            return rotateRight(node);
         }
-        return height(node.left) - height(node.right);
+        if (balance < -1) {
+            if (balance(node.right) > 0) {
+                node.right = rotateRight(node.right);
+            }
+            return rotateLeft(node);
+        }
+        return node;
     }
 
-    public AVLTreeNode<K, V> insert(AVLTreeNode<K,V> node, K key, V value) {
+    public AVLTree<K, V> insert(K key, V value) {
+        root = insert(root, key, value);
+        return this;
+    }
+
+
+    private AVLTreeNode<K, V> insert(AVLTreeNode<K,V> node, K key, V value) {
 
         // BSTree Insertion
         if (node == null) {
@@ -131,31 +147,7 @@ public class AVLTree <K extends Comparable<K>, V>{
         // Update height
         node.height = (1 + Math.max(height(node.left), height(node.right)));
 
-        // Get Balance
-        int balance = balance(node);
-
-        // left-left
-        if (balance > 1 && cmp.compare(key, node.left.key) < 0) {
-            return rotateRight(node);
-        }
-
-        // right-right
-        if (balance < -1 && cmp.compare(key, node.right.key) > 0) {
-            return rotateLeft(node);
-        }
-
-        // left-right
-        if (balance > 1 && cmp.compare(key, node.right.key) > 0) {
-            node.left = (rotateLeft(node.left));
-            return rotateRight(node);
-        }
-
-        // right-left
-        if (balance < -1 && cmp.compare(key, node.right.key) < 0) {
-            node.right = (rotateRight(node.right));
-            return rotateLeft(node);
-        }
-        return node;
+        return applyRotation(node);
     }
 
     public void preOrder (AVLTreeNode<K, V> node) {
@@ -170,11 +162,12 @@ public class AVLTree <K extends Comparable<K>, V>{
 
         AVLTree<Integer, Integer> tree = new AVLTree<>(10,10);
 
-        tree.root = tree.insert(tree.root, 20, 20);
-        tree.root = tree.insert(tree.root, 25, 25);
-        tree.root = tree.insert(tree.root, 30, 30);
-        tree.root = tree.insert(tree.root, 40, 40);
-        tree.root = tree.insert(tree.root, 50, 50);
+        tree.insert(20, 20);
+        tree.insert(25, 25);
+        tree.insert(30, 30);
+        tree.insert(40, 40);
+        tree.insert(50, 50);
+
 
 
 
@@ -186,8 +179,8 @@ public class AVLTree <K extends Comparable<K>, V>{
      10  25    50
 */
         tree.preOrder(tree.root);
-        System.out.println(tree.root.toString());
-        System.out.println(tree.root.left.toString());
-        System.out.println(tree.root.right.toString());
+//        System.out.println(tree.root.toString());
+//        System.out.println(tree.root.left.toString());
+//        System.out.println(tree.root.right.toString());
     }
 }
