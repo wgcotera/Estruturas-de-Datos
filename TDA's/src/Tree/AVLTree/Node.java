@@ -1,6 +1,6 @@
 package Tree.AVLTree;
 
-public class AVLTreeNode<K extends Comparable<K>, V> {
+public class Node<K extends Comparable<K>, V> {
 
     /* *********************************************************************
      * Parameters
@@ -9,14 +9,14 @@ public class AVLTreeNode<K extends Comparable<K>, V> {
     V value;
     int height;
 
-    AVLTreeNode<K, V> left;
-    AVLTreeNode<K, V> right;
+    Node<K, V> left;
+    Node<K, V> right;
 
     /* *********************************************************************
      * Constructors
      ******************************************************************** */
 
-    public AVLTreeNode(K key, V value) {
+    public Node(K key, V value) {
         this.key = key;
         this.value = value;
         this.height = 1;
