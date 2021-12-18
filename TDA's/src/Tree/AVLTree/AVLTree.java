@@ -1,6 +1,8 @@
 package Tree.AVLTree;
 
 import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.Queue;
 
 
 public class AVLTree <K extends Comparable<K>, V>{
@@ -41,6 +43,29 @@ public class AVLTree <K extends Comparable<K>, V>{
      * Setters
      ******************************************************************** */
 
+
+    /* *********************************************************************
+     * Public Methods
+     ******************************************************************** */
+
+    public boolean isEmpty() { return root == null;}
+
+    public AVLTree<K, V> insert(K key, V value) {
+        root = insert(root, key, value);
+        return this;
+    }
+
+    public V search(K key) {
+        return search(root, key);
+    }
+
+    public void printPreOrder() {
+        printPreOrder(root);
+    }
+
+    public void printBFS() {
+        printBFS(root);
+    }
 
     /* *********************************************************************
      * Private Methods
@@ -157,39 +182,42 @@ public class AVLTree <K extends Comparable<K>, V>{
         }
     }
 
-    /* *********************************************************************
-     * Public Methods
-     ******************************************************************** */
 
-    public boolean isEmpty() { return this.root == null;}
-
-    public AVLTree<K, V> insert(K key, V value) {
-        root = insert(root, key, value);
-        return this;
+    private void printBFS(Node<K,V> node) {
+        Queue<Node<K, V>> pq = new LinkedList<>();
+        pq.offer(node);
+        while(pq.size() > 0) {
+            Node<K, V> tmp = pq.poll();
+            if (tmp != null) {
+                System.out.println(tmp.toString());
+                if (tmp.left != null) {
+                    pq.offer(tmp.left);
+                }
+                if (tmp.right != null) {
+                    pq.offer(tmp.right);
+                }
+            }
+        }
     }
 
-    public V search(K key) {
-        return search(this.root, key);
-    }
-
-    public void printPreOrder() {
-        printPreOrder(this.root);
-    }
 
     public static void main (String[]args){
 
-        AVLTree<Integer, Integer> tree = new AVLTree<>();
-        tree.insert(10, 10);
-        tree.insert(20, 20);
-        tree.insert(30, 30);
-        tree.insert(40, 40);
-        tree.insert(50, 50);
-        tree.insert(25, 25);
-        tree.insert(15, 25);
-        tree.insert(27, 25);
-        tree.insert(44, 25);
-        tree.insert(32, 25);
+        AVLTree<Integer, Character> tree = new AVLTree<>();
+        tree.insert(10, 'A');
+        tree.insert(20, 'B');
+        tree.insert(30, 'C');
+        tree.insert(40, 'D');
+        tree.insert(50, 'E');
+        tree.insert(25, 'F');
+        tree.insert(15, 'G');
+        tree.insert(27, 'H');
+        tree.insert(44, 'I');
+        tree.insert(32, 'J');
 
         tree.printPreOrder();
+        System.out.println("\n");
+        tree.printBFS();
+        System.out.println(tree.search(50));
     }
 }

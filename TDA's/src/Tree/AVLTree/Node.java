@@ -37,6 +37,6 @@ public class Node<K extends Comparable<K>, V> {
      ******************************************************************** */
     @Override
     public String toString() {
-        return "{" +"key=" + key +", value=" + value +", height=" + height +"}";
+        return "{" +"key=" + key +"\t value=" + value +"\t height=" + height +"}";
     }
 }
