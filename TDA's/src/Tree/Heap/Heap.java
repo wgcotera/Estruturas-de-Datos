@@ -28,7 +28,7 @@ public class Heap<E extends Comparable<E>> {
         this.capacity = capacity;
         this.size = 0;
         this.isMax = isMax;
-        this.queue = (E[]) new Object[this.capacity];
+        this.queue = (E[]) new Comparable[this.capacity];
         this.comparator = isMax ? comparator : comparator.reversed();
     }
 
@@ -77,6 +77,7 @@ public class Heap<E extends Comparable<E>> {
                 this.grow();
             }
             queue[this.size++] = element;
+            fixUpward();
         }
         return this;
     }
@@ -131,13 +132,13 @@ public class Heap<E extends Comparable<E>> {
 
     private void grow() {
         int newCap = this.size + (this.size >> 1);
-        E[] newQueue = (E[]) new Object[newCap];
+        E[] newQueue = (E[]) new Comparable[newCap];
         for(int i = 0 ; i < this.size ; i++) {
             newQueue[i] = queue[i];
         }
         queue = newQueue;
     }
-    
+
     private int compare(int index1, int index2) {
         return comparator.compare(queue[index1], queue[index2]);
     }
