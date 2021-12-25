@@ -10,15 +10,13 @@ public class Heap<E extends Comparable<E>> {
 
     public static int DEFAULT_CAPACITY = 10;
 
-    private int capacity;
+    private final int capacity;
 
     private int size;
 
-    private boolean isMax;
-
     private E[] queue;
 
-    private Comparator<E> comparator;
+    private final Comparator<E> comparator;
 
     /* *********************************************************************
      * Constructors
@@ -27,9 +25,8 @@ public class Heap<E extends Comparable<E>> {
     public Heap(Comparator<E> comparator, int capacity, boolean isMax) {
         this.capacity = capacity;
         this.size = 0;
-        this.isMax = isMax;
         this.queue = (E[]) new Comparable[this.capacity];
-        this.comparator = isMax ? comparator : comparator.reversed();
+        this.comparator = isMax ? comparator.reversed() : comparator;
     }
 
     public Heap(Comparator<E> comparator) {
@@ -43,6 +40,8 @@ public class Heap<E extends Comparable<E>> {
     public Heap(Comparator<E> comparator, boolean isMax) {
         this(comparator, DEFAULT_CAPACITY, isMax);
     }
+
+    public Heap(boolean isMax) { this(Comparator.naturalOrder(), DEFAULT_CAPACITY, isMax); }
 
     public Heap() {
         this(Comparator.naturalOrder(), DEFAULT_CAPACITY, false);
@@ -77,7 +76,7 @@ public class Heap<E extends Comparable<E>> {
                 this.grow();
             }
             queue[this.size++] = element;
-            fixUpward();
+            heapifyUp();
         }
         return this;
     }
@@ -96,7 +95,7 @@ public class Heap<E extends Comparable<E>> {
 
         E topValue = queue[0];
         swap(0, --size);
-        fixDownward(0);
+        heapifyDown(0);
 
         return topValue;
     }
@@ -149,7 +148,7 @@ public class Heap<E extends Comparable<E>> {
         queue[index2] = tmpElement;
     }
 
-    private void fixDownward(int index) {
+    private void heapifyDown(int index) {
 
         if (isLeaf(index)) {
             return;
@@ -159,23 +158,23 @@ public class Heap<E extends Comparable<E>> {
         int leftIndex = getLeftIndex(index);
         int rightIndex = getRightIndex(index);
 
-        if(checkRange(leftIndex) && this.compare(leftIndex, topIndex) > 0) {
+        if(checkRange(leftIndex) && this.compare(leftIndex, topIndex) < 0) {
             topIndex = leftIndex;
         }
 
-        if(checkRange(rightIndex) && this.compare(rightIndex, topIndex) > 0) {
+        if(checkRange(rightIndex) && this.compare(rightIndex, topIndex) < 0) {
             topIndex = rightIndex;
         }
 
         if(topIndex != index) {
             swap(topIndex, index);
-            fixDownward(topIndex);
+            heapifyDown(topIndex);
         }
     }
 
-    private void fixUpward() {
+    private void heapifyUp() {
         for (int i = (this.size >> 1) - 1; i >= 0 ; --i) {
-            fixDownward(i);
+            heapifyDown(i);
         }
     }
 }
