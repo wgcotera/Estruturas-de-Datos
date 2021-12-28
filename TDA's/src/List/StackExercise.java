@@ -1,6 +1,5 @@
-package list;
+package List;
 
-import java.util.Arrays;
 import java.util.Stack;
 
 /**

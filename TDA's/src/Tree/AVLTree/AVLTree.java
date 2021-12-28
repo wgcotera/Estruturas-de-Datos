@@ -7,6 +7,41 @@ import java.util.Queue;
 
 public class AVLTree <K extends Comparable<K>, V>{
 
+    /* *********************************************************************
+     * Inner Classes
+     ******************************************************************** */
+    private class Node<K extends Comparable<K>, V> {
+
+        /* *********************************************************************
+         * Parameters
+         ******************************************************************** */
+        K key;
+        V value;
+        int height;
+
+        Node<K, V> left;
+        Node<K, V> right;
+
+        /* *********************************************************************
+         * Constructors
+         ******************************************************************** */
+
+        public Node(K key, V value) {
+            this.key = key;
+            this.value = value;
+            this.height = 1;
+            this.left = null;
+            this.right = null;
+        }
+
+        /* *********************************************************************
+         * Methods
+         ******************************************************************** */
+        @Override
+        public String toString() {
+            return "{" + "key=" + key + "\t value=" + value + "\t height=" + height + "}";
+        }
+    }
 
     /* *********************************************************************
      * Parameters
@@ -40,11 +75,6 @@ public class AVLTree <K extends Comparable<K>, V>{
     }
 
     /* *********************************************************************
-     * Setters
-     ******************************************************************** */
-
-
-    /* *********************************************************************
      * Public Methods
      ******************************************************************** */
 
@@ -66,6 +96,7 @@ public class AVLTree <K extends Comparable<K>, V>{
     public void printBFS() {
         printBFS(root);
     }
+
 
     /* *********************************************************************
      * Private Methods
@@ -182,7 +213,6 @@ public class AVLTree <K extends Comparable<K>, V>{
         }
     }
 
-
     private void printBFS(Node<K,V> node) {
         Queue<Node<K, V>> pq = new LinkedList<>();
         pq.offer(node);
@@ -198,26 +228,5 @@ public class AVLTree <K extends Comparable<K>, V>{
                 }
             }
         }
-    }
-
-
-    public static void main (String[]args){
-
-        AVLTree<Integer, Character> tree = new AVLTree<>();
-        tree.insert(10, 'A');
-        tree.insert(20, 'B');
-        tree.insert(30, 'C');
-        tree.insert(40, 'D');
-        tree.insert(50, 'E');
-        tree.insert(25, 'F');
-        tree.insert(15, 'G');
-        tree.insert(27, 'H');
-        tree.insert(44, 'I');
-        tree.insert(32, 'J');
-
-        tree.printPreOrder();
-        System.out.println("\n");
-        tree.printBFS();
-        System.out.println(tree.search(50));
     }
 }

@@ -1,6 +1,5 @@
-package list;
+package List;
 
-import static java.lang.Math.floor;
 import java.util.Iterator;
 
 /**
@@ -171,7 +170,7 @@ public class ArrayList<E> implements List<E> {
     // DONE
     @Override
     public List<E> copy() {
-        List<E> copy = new ArrayList<>();
+        List<E> copy = new ArrayList<E>();
         for (int i = 0 ; i < this.effectiveSize ; i++) {
             copy.addLast(this.elements[i]);
         }

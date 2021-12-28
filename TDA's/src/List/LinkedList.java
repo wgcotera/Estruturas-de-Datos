@@ -1,4 +1,4 @@
-package list;
+package List;
 
 import java.util.Iterator;
 
@@ -356,7 +356,7 @@ public class LinkedList<E> implements List<E> {
     }
 
     public static List<String> getStringsShorterThan1(List<String> inputList, int k) {
-        List<String> result = new LinkedList<>();
+        List<String> result = new LinkedList<String>();
 
         for(String s : inputList) {
             if (s.length() < k) {
