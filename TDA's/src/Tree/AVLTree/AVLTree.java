@@ -216,7 +216,7 @@ public class AVLTree <K extends Comparable<K>, V>{
     private void printBFS(Node<K,V> node) {
         Queue<Node<K, V>> pq = new LinkedList<>();
         pq.offer(node);
-        while(pq.size() > 0) {
+        while(!pq.isEmpty()) {
             Node<K, V> tmp = pq.poll();
             if (tmp != null) {
                 System.out.println(tmp.toString());
