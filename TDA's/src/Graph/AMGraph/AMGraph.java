@@ -1,7 +1,5 @@
 package Graph.AMGraph;
 
-
-import java.util.ArrayList;
 import java.util.Comparator;
 
 public class AMGraph<V extends Comparable<V>> {
@@ -12,9 +10,10 @@ public class AMGraph<V extends Comparable<V>> {
     public static int DEFAULT_CAPACITY = 10;
     public static int DEFAULT_MATRIX_VALUE = Integer.MAX_VALUE;
 
-    private ArrayList<V> vertices;
+    private V[] vertices;
     private boolean isDirected;
     private int capacity;
+    private int size;
     private int[][] matrix;
     private Comparator<V> cmpVertex;
 
@@ -23,17 +22,11 @@ public class AMGraph<V extends Comparable<V>> {
      ******************************************************************** */
 
     public AMGraph(boolean isDirected, int capacity, Comparator<V> cmpVertex) {
-        this.vertices = new ArrayList<>();
+        this.vertices = (V[]) new Object[capacity];
         this.isDirected = isDirected;
         this.capacity = capacity;
         this.matrix = new int[capacity][capacity];
-
-        for (int i = 0 ; i < this.matrix.length; i++) {
-            for ( int j = 0 ; j < this.matrix.length ; j++) {
-                this.matrix[i][j] = DEFAULT_MATRIX_VALUE;
-            }
-        }
-
+        this.initMatrix(this.matrix);
         this.cmpVertex = cmpVertex;
     }
 
@@ -56,7 +49,10 @@ public class AMGraph<V extends Comparable<V>> {
 
     public AMGraph<V> addVertex(V vertex) {
         if (!this.containVertex(vertex)) {
-            this.vertices.add(vertex);
+            if (this.isFull()) {
+                this.grow();
+            }
+            vertices[size++] = vertex;
         }
         return this;
     }
@@ -81,6 +77,14 @@ public class AMGraph<V extends Comparable<V>> {
     /* *********************************************************************
      * Private Methods
      ******************************************************************** */
+
+    private void initMatrix(int[][] matrix) {
+        for (int i = 0 ; i < matrix.length; i++) {
+            for ( int j = 0 ; j < matrix.length ; j++) {
+                matrix[i][j] = DEFAULT_MATRIX_VALUE;
+            }
+        }
+    }
 
     private int vertexCompare(V vertex1, V vertex2) {
         return this.cmpVertex.compare(vertex1, vertex2);
@@ -108,5 +112,48 @@ public class AMGraph<V extends Comparable<V>> {
             }
         }
         return i;
+    }
+
+    private boolean isFull() {
+        return size == capacity;
+    }
+
+    private void grow() {
+
+        this.capacity = this.capacity + (this.capacity >> 1);
+
+        // grow array of vertices
+        V[] tmp = (V[]) (new Object[this.capacity]);
+        for (int i = 0; i < this.size; i++) {
+            tmp[i] = this.vertices[i];
+        }
+        this.vertices = tmp;
+
+        // grow matrix
+        this.growMatrix(this.capacity);
+    }
+
+    private void growArray(int capacity, int[] array) {
+
+        int[] tmp = new int[capacity];
+
+        for (int i = 0; i < array.length; i++) {
+            tmp[i] = array[i];
+        }
+
+        array = tmp;
+    }
+
+    private void growMatrix(int capacity) {
+
+        int[][] tmp = new int[capacity][capacity];
+        this.initMatrix(tmp);
+
+        for (int i = 0 ; i < this.matrix.length ; i ++ ) {
+            this.growArray(capacity, this.matrix[i]);
+            tmp[i] = this.matrix[i];
+        }
+
+        this.matrix = tmp;
     }
 }
