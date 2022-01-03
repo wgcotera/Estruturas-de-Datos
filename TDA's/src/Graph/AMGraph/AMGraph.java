@@ -7,24 +7,25 @@ public class AMGraph<V extends Comparable<V>> {
     /* *********************************************************************
      * Parameters
      ******************************************************************** */
-    public static int DEFAULT_CAPACITY = 10;
-    public static int DEFAULT_MATRIX_VALUE = Integer.MAX_VALUE;
+    public static final int DEFAULT_CAPACITY = 10;
+    public static final int DEFAULT_MATRIX_VALUE = Integer.MAX_VALUE;
 
-    private V[] vertices;
-    private boolean isDirected;
-    private int capacity;
-    private int size;
-    private int[][] matrix;
-    private Comparator<V> cmpVertex;
+    private     V[]                     vertices;
+    private     boolean            isDirected;
+    private     int                     capacity;
+    private     int                     size;
+    private     int[][]                 matrix;
+    private Comparator<V>   cmpVertex;
 
     /* *********************************************************************
      * Constructors
      ******************************************************************** */
 
     public AMGraph(boolean isDirected, int capacity, Comparator<V> cmpVertex) {
-        this.vertices = (V[]) new Object[capacity];
+        this.vertices = (V[]) new Comparable[capacity];
         this.isDirected = isDirected;
         this.capacity = capacity;
+        this.size = 0;
         this.matrix = new int[capacity][capacity];
         this.initMatrix(this.matrix);
         this.cmpVertex = cmpVertex;
@@ -123,7 +124,7 @@ public class AMGraph<V extends Comparable<V>> {
         this.capacity = this.capacity + (this.capacity >> 1);
 
         // grow array of vertices
-        V[] tmp = (V[]) (new Object[this.capacity]);
+        V[] tmp = (V[]) (new Comparable[this.capacity]);
         for (int i = 0; i < this.size; i++) {
             tmp[i] = this.vertices[i];
         }
@@ -133,15 +134,11 @@ public class AMGraph<V extends Comparable<V>> {
         this.growMatrix(this.capacity);
     }
 
-    private void growArray(int capacity, int[] array) {
+    private int[] growArray(int capacity, int[] array) {
 
         int[] tmp = new int[capacity];
-
-        for (int i = 0; i < array.length; i++) {
-            tmp[i] = array[i];
-        }
-
-        array = tmp;
+        System.arraycopy(array, 0, tmp, 0, array.length);
+        return tmp;
     }
 
     private void growMatrix(int capacity) {
@@ -150,8 +147,7 @@ public class AMGraph<V extends Comparable<V>> {
         this.initMatrix(tmp);
 
         for (int i = 0 ; i < this.matrix.length ; i ++ ) {
-            this.growArray(capacity, this.matrix[i]);
-            tmp[i] = this.matrix[i];
+            tmp[i] = this.growArray(capacity, this.matrix[i]);
         }
 
         this.matrix = tmp;
