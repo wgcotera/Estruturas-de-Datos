@@ -10,12 +10,12 @@ public class AMGraph<V extends Comparable<V>> {
     public static final int DEFAULT_CAPACITY = 10;
     public static final int DEFAULT_MATRIX_VALUE = Integer.MAX_VALUE;
 
-    private     V[]                     vertices;
-    private     boolean            isDirected;
-    private     int                     capacity;
-    private     int                     size;
-    private     int[][]                 matrix;
-    private Comparator<V>   cmpVertex;
+    private     V[] vertices;
+    private     final boolean isDirected;
+    private     int capacity;
+    private     int size;
+    private     int[][] matrix;
+    private     final Comparator<V> cmpVertex;
 
     /* *********************************************************************
      * Constructors
@@ -58,15 +58,11 @@ public class AMGraph<V extends Comparable<V>> {
         return this;
     }
 
-    public void addEdge(V v1, V v2) {
-        this.addEdge(v1, v2, 1);
-    }
-
     public void addEdge(V v1, V v2, int weight) {
         int v1Index = this.indexOf(v1);
         int v2Index = this.indexOf(v2);
 
-        if (v1Index != 1 && v2Index != -1) {
+        if (v1Index != -1 && v2Index != -1) {
             this.matrix[v1Index][v2Index] = weight;
             if (!this.isDirected) {
                 this.matrix[v2Index][v1Index] = weight;
@@ -74,6 +70,62 @@ public class AMGraph<V extends Comparable<V>> {
         }
     }
 
+    public void addEdge(V v1, V v2) {
+        this.addEdge(v1, v2, 1);
+    }
+
+    public void removeEdge(V v1, V v2) {
+        this.addEdge(v1, v2, DEFAULT_MATRIX_VALUE);
+    }
+
+    public boolean isAdyacent(V v1, V v2) {
+
+        int v1Index = this.indexOf(v1);
+        int v2Index = this.indexOf(v2);
+
+        if (v1Index != -1 && v2Index != -1) {
+            return this.matrix[v1Index][v2Index] != DEFAULT_MATRIX_VALUE;
+        }
+
+        return false;
+    }
+
+    private <T> void  shiftLeft(int index, T[] array) {
+        for (int i = index ; i < this.size ; i++) {
+            array[i] = array[i+1];
+        }
+        array[this.size - 1] = null;
+    }
+
+    private void  shiftLeft(int index, int[] array) {
+        for (int i = index ; i < this.size ; i++) {
+            array[i] = array[i+1];
+        }
+        array[this.size - 1] = DEFAULT_MATRIX_VALUE;
+    }
+
+    public V removeVertex(V vertex) {
+
+        int vertexIdx = this.indexOf(vertex);
+
+        if (vertexIdx == -1) {
+            return null;
+        }
+
+        V tmpVertex = this.vertices[vertexIdx];
+
+        this.shiftLeft(vertexIdx, this.vertices);
+
+        this.shiftLeft(vertexIdx, this.matrix);
+
+        for (int i = 0 ; i < this.size ; i++) {
+            this.shiftLeft(vertexIdx, this.matrix[i]);
+        }
+
+        this.size--;
+
+        return tmpVertex;
+    }
 
     /* *********************************************************************
      * Private Methods
@@ -125,9 +177,7 @@ public class AMGraph<V extends Comparable<V>> {
 
         // grow array of vertices
         V[] tmp = (V[]) (new Comparable[this.capacity]);
-        for (int i = 0; i < this.size; i++) {
-            tmp[i] = this.vertices[i];
-        }
+        if (this.size >= 0) System.arraycopy(this.vertices, 0, tmp, 0, this.size);
         this.vertices = tmp;
 
         // grow matrix
