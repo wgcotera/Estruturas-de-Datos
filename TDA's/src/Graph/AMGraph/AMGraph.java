@@ -1,6 +1,9 @@
 package Graph.AMGraph;
 
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Objects;
+import java.util.stream.IntStream;
 
 public class AMGraph<V extends Comparable<V>> {
 
@@ -91,41 +94,43 @@ public class AMGraph<V extends Comparable<V>> {
     }
 
     private <T> void  shiftLeft(int index, T[] array) {
-        for (int i = index ; i < this.size ; i++) {
-            array[i] = array[i+1];
-        }
+        if (this.size - index >= 0) System.arraycopy(array, index + 1, array, index, this.size - index);
         array[this.size - 1] = null;
     }
 
     private void  shiftLeft(int index, int[] array) {
-        for (int i = index ; i < this.size ; i++) {
-            array[i] = array[i+1];
-        }
+        if (this.size - index >= 0) System.arraycopy(array, index + 1, array, index, this.size - index);
         array[this.size - 1] = DEFAULT_MATRIX_VALUE;
     }
 
     public V removeVertex(V vertex) {
 
         int vertexIdx = this.indexOf(vertex);
-
-        if (vertexIdx == -1) {
-            return null;
-        }
-
-        V tmpVertex = this.vertices[vertexIdx];
+        if (vertexIdx == -1) {return null; }
+        V removedVertex = this.vertices[vertexIdx];
 
         this.shiftLeft(vertexIdx, this.vertices);
 
         this.shiftLeft(vertexIdx, this.matrix);
 
-        for (int i = 0 ; i < this.size ; i++) {
+        for (int i = 0 ; i < this.size - 1  ; i++) {
             this.shiftLeft(vertexIdx, this.matrix[i]);
         }
 
         this.size--;
 
-        return tmpVertex;
+
+        return removedVertex;
     }
+
+    public void print() {
+        for (V vertex : vertices) {
+            if (vertex != null) {
+                System.out.println(vertex);
+            }
+        }
+    }
+
 
     /* *********************************************************************
      * Private Methods
@@ -139,14 +144,17 @@ public class AMGraph<V extends Comparable<V>> {
         }
     }
 
-    private int vertexCompare(V vertex1, V vertex2) {
-        return this.cmpVertex.compare(vertex1, vertex2);
+    private boolean vertexEquals(V vertex1, V vertex2) {
+        if (vertex1 == null ^ vertex2 == null) {
+            return false;
+        }
+        return this.cmpVertex.compare(vertex1, vertex2) == 0;
     }
 
     private boolean containVertex(V vertex) {
         if (vertex != null) {
             for (V v : this.vertices) {
-                if (vertexCompare(v, vertex) == 0) {
+                if (vertexEquals(v, vertex)) {
                     return true;
                 }
             }
@@ -155,16 +163,10 @@ public class AMGraph<V extends Comparable<V>> {
     }
 
     private int indexOf(V vertex) {
-        int i = -1;
-        if (this.containVertex(vertex)) {
-            for (V v : this.vertices) {
-                if (vertexCompare(v, vertex) == 0) {
-                    break;
-                }
-                i++;
-            }
-        }
-        return i;
+        return IntStream.range(0, size)
+                .filter(i -> this.vertexEquals(vertices[i], vertex) )
+                .findFirst()
+                .orElse(-1);
     }
 
     private boolean isFull() {
