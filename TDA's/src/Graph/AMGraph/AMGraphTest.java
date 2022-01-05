@@ -9,5 +9,8 @@ public class AMGraphTest {
 
         g.removeVertex(1);
         g.print();
+        System.out.println(g.isAdyacent(2,3));
+        g.addEdge(2,3);
+        System.out.println(g.isAdyacent(2,3));
     }
 }

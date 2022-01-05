@@ -1,8 +1,6 @@
 package Graph.AMGraph;
 
-import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Objects;
 import java.util.stream.IntStream;
 
 public class AMGraph<V extends Comparable<V>> {
@@ -10,8 +8,8 @@ public class AMGraph<V extends Comparable<V>> {
     /* *********************************************************************
      * Parameters
      ******************************************************************** */
-    public static final int DEFAULT_CAPACITY = 10;
-    public static final int DEFAULT_MATRIX_VALUE = Integer.MAX_VALUE;
+    private  static final int DEFAULT_CAPACITY = 10;
+    private static final int DEFAULT_MATRIX_VALUE = Integer.MAX_VALUE;
 
     private     V[] vertices;
     private     final boolean isDirected;
@@ -56,7 +54,7 @@ public class AMGraph<V extends Comparable<V>> {
             if (this.isFull()) {
                 this.grow();
             }
-            vertices[size++] = vertex;
+            vertices[this.size++] = vertex;
         }
         return this;
     }
@@ -126,9 +124,15 @@ public class AMGraph<V extends Comparable<V>> {
     public int outDegree(V vertex) {
 
         int vertexIdx = this.indexOf(vertex);
-        if (vertexIdx == -1) {return -1; } // en caso que el vertice no exista
+        if (vertexIdx == -1) {return -1; }
 
-        return (int) Arrays.stream(this.matrix[vertexIdx]).filter(i -> i != DEFAULT_MATRIX_VALUE).count();
+        int count = 0;
+        for (int i : this.matrix[vertexIdx]) {
+            if (i != DEFAULT_MATRIX_VALUE) {
+                count++;
+            }
+        }
+        return count;
     }
 
     public int inDegree(V vertex) {
