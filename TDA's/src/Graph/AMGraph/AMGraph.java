@@ -123,6 +123,29 @@ public class AMGraph<V extends Comparable<V>> {
         return removedVertex;
     }
 
+    public int outDegree(V vertex) {
+
+        int vertexIdx = this.indexOf(vertex);
+        if (vertexIdx == -1) {return -1; } // en caso que el vertice no exista
+
+        return (int) Arrays.stream(this.matrix[vertexIdx]).filter(i -> i != DEFAULT_MATRIX_VALUE).count();
+    }
+
+    public int inDegree(V vertex) {
+
+        int vertexIdx = this.indexOf(vertex);
+        if (vertexIdx == -1) {return -1; }
+
+        int counter = 0;
+
+        for (int i = 0 ; i < this.size ; i++) {
+            if (this.matrix[i][vertexIdx] != DEFAULT_MATRIX_VALUE) {
+                counter++;
+            }
+        }
+        return counter;
+    }
+
     public void print() {
         for (V vertex : vertices) {
             if (vertex != null) {
