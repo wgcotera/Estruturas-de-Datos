@@ -9,38 +9,51 @@ public class ALGraph<V extends Comparable<V>, E> {
      * Inner Classes
      ******************************************************************** */
 
-    private class Node<V extends Comparable<V>, E> {
-        private V content;
-        private LinkedList<Edge<E, V>> edges;
-        private boolean isVisited;
+    private class Vertex<V extends Comparable<V>, E> {
+        private final V content;
+        private final LinkedList<Edge<E, V>> edges;
+        private boolean  isVisited;
 
         private int distance;
-        private Node<V, E> predecesor;
+        private Vertex<V, E> predecesor;
 
-        public Node(V content) {
+        private Vertex(V content) {
             this.content = content;
             this.edges = new LinkedList<>();
             this.isVisited = false;
         }
+
+        @Override
+        public String toString() {
+            return content.toString();
+        }
+
+        private void printVertex() {
+            System.out.println("{ source = " + this + " }");
+        }
     }
 
     private class Edge<E, V extends Comparable<V>> {
-        private E data;
-        private Node<V, E> source;
-        private Node<V, E> target;
-        private int weight;
+        private final Vertex<V, E> source;
+        private final Vertex<V, E> target;
+        private final int weight;
+        private final E data;
 
-        public Edge(E data, Node<V, E> source, Node<V, E> target, int weight) {
-            this.data = data;
+        private Edge(Vertex<V, E> source, Vertex<V, E> target, int weight, E data) {
             this.source = source;
             this.target = target;
             this.weight = weight;
+            this.data = data;
         }
 
-        public Edge(Node<V, E> source, Node<V, E> target) {
-            this(null, source, target,1);
+        private Edge(Vertex<V, E> source, Vertex<V, E> target) {
+            this(source, target,1, null);
         }
 
+        private void printEdge() {
+            System.out.printf("{ source = %s \t target = %s \t weight = %d \t data = %s }\n",
+                                        source.toString(), target.toString(), weight, data.toString());
+        }
     }
 
     /* *********************************************************************
@@ -48,9 +61,9 @@ public class ALGraph<V extends Comparable<V>, E> {
      ******************************************************************** */
 
     private int vertices;
-    private LinkedList<Node<V, E>> nodes;
-    private boolean isDirected;
-    private Comparator<V> comparator;
+    private final LinkedList<Vertex<V, E>> nodes;
+    private final boolean isDirected;
+    private final Comparator<V> comparator;
 
     /* *********************************************************************
      * Constructors
@@ -75,47 +88,55 @@ public class ALGraph<V extends Comparable<V>, E> {
      * Public Methods
      ******************************************************************** */
 
+    public int countVertices() {
+        return this.vertices;
+    }
     public ALGraph<V, E> addVertex(V vertex) {
         if (vertex != null && !this.containVertex(vertex)) {
-            this.nodes.add(new Node<>(vertex));
+            this.nodes.add(new Vertex<>(vertex));
             vertices++;
         }
         return this;
     }
 
-    public void addEdge(V vertex1, V vertex2) {
+    public void addEdge(V vertex1, V vertex2, int weight, E data) {
 
-        Node<V, E> source = this.getNode(vertex1);
-        Node<V, E> target = this.getNode(vertex2);
+        Vertex<V, E> source = this.getVertex(vertex1);
+        Vertex<V, E> target = this.getVertex(vertex2);
 
-        if (source != null && target != null && !this.containEdge(vertex1, vertex2)) {
-            source.edges.add(new Edge<>(source, target));
+        if (source != null && target != null && !this.containEdge(source, target, weight, data)) {
+            source.edges.add(new Edge<>(source, target, weight, data));
             if (!this.isDirected) {
-                target.edges.add(new Edge<>(target, source));
+                target.edges.add(new Edge<>(source, target, weight, data));
             }
         }
     }
 
-    public List<V> bfs(V vertex) {
-        List<V> result = this.bfsPrivate(vertex);
+    public LinkedList<V> BSF(V vertex) {
+        LinkedList<V> result = this.bsfPrivate(vertex);
         this.resetIsVisited();
         return result;
     }
 
-    public List<V> dfs(V vertex) {
-        List<V> result = this.dfsPrivate(vertex);
+    public LinkedList<V> DSF(V vertex) {
+        LinkedList<V> result = this.dsfPrivate(vertex);
         this.resetIsVisited();
         return result;
+    }
+
+    public LinkedList<List<V>> paths() {
+        LinkedList<List<V>> paths = new LinkedList<>();
+        for (Vertex<V, E> vertex : this.nodes) {
+            if (!vertex.isVisited) {
+                paths.add(this.bsfPrivate(vertex.content));
+            }
+        }
+        this.resetIsVisited();
+        return paths;
     }
 
     public boolean isRelated() {
-        List<List<V>> paths = new LinkedList<>();
-        for (Node<V, E> node : this.nodes) {
-            if (!node.isVisited) {
-                paths.add(this.bfsPrivate(node.content));
-            }
-        }
-        this.resetIsVisited();
+        LinkedList<List<V>> paths = this.paths();
         return paths.size() == 1;
     }
 
@@ -123,20 +144,20 @@ public class ALGraph<V extends Comparable<V>, E> {
      * Private Methods
      ******************************************************************** */
 
-    private int vertexCompare(V vertex1, V vertex2) {
-        return this.comparator.compare(vertex1, vertex2);
+    private boolean vertexEquals(V vertex1, V vertex2) {
+        return this.comparator.compare(vertex1, vertex2) == 0;
     }
 
     private boolean equalEdges(Edge<E, V> edge1, Edge<E, V> edge2) {
-        int sourceCmp = vertexCompare(edge1.source.content, edge2.source.content);
-        int targetCmp = vertexCompare(edge1.target.content, edge2.target.content);
-        return sourceCmp == 0 && targetCmp == 0;
+        boolean source = vertexEquals(edge1.source.content, edge2.source.content);
+        boolean target = vertexEquals(edge1.target.content, edge2.target.content);
+        return source && target && edge1.data == edge2.data && edge1.weight == edge2.weight;
     }
 
-    private Node<V, E> getNode(V vertex) {
+    private Vertex<V, E> getVertex(V vertex) {
         if (this.vertices != 0 && vertex != null) {
-            for (Node<V, E> node : nodes) {
-                if (vertexCompare(vertex, node.content) == 0) {
+            for (Vertex<V, E> node : nodes) {
+                if (vertexEquals(vertex, node.content)) {
                     return node;
                 }
             }
@@ -146,8 +167,8 @@ public class ALGraph<V extends Comparable<V>, E> {
 
     private boolean containVertex(V vertex) {
         if (this.vertices != 0 && vertex != null) {
-            for (Node<V, E> node : nodes) {
-                if (vertexCompare(vertex, node.content) == 0) {
+            for (Vertex<V, E> v : nodes) {
+                if (vertexEquals(vertex, v.content)) {
                     return true;
                 }
             }
@@ -155,14 +176,11 @@ public class ALGraph<V extends Comparable<V>, E> {
         return false;
     }
 
-    private boolean containEdge(V vertex1, V vertex2) {
-
-        Node<V, E> source = this.getNode(vertex1);
-        Node<V, E> target = this.getNode(vertex2);
+    private boolean containEdge(Vertex<V,E> source, Vertex<V,E> target, int weight, E data) {
 
         if(source != null && target != null) {
 
-            Edge<E, V> tmpEdge = new Edge<>(source, target);
+            Edge<E, V> tmpEdge = new Edge<>(source, target, weight, data);
 
             for (Edge<E, V> edge : source.edges) {
                 if (equalEdges(tmpEdge, edge)) {
@@ -174,31 +192,31 @@ public class ALGraph<V extends Comparable<V>, E> {
     }
 
     private void resetIsVisited() {
-        for(Node<V, E> node : nodes) {
-            node.isVisited = false;
+        for(Vertex<V, E> vertex : nodes) {
+            vertex.isVisited = false;
         }
     }
 
-    private  List<V> bfsPrivate(V vertex) {
+    private  LinkedList<V> bsfPrivate(V vertex) {
 
-        List<V> result = new LinkedList<>();
-        Node<V, E> source = this.getNode(vertex);
+        LinkedList<V> result = new LinkedList<>();
+        Vertex<V, E> source = this.getVertex(vertex);
 
         if(source != null) {
 
-            Queue<Node<V, E>> queue = new LinkedList<>();
+            Queue<Vertex<V, E>> queue = new LinkedList<>();
             queue.offer(source);
 
             while(!queue.isEmpty()) {
 
-                Node<V, E> tmpNode = queue.poll();
+                Vertex<V, E> tmpVertex = queue.poll();
 
-                if(!tmpNode.isVisited){
-                    result.add(tmpNode.content);
-                    tmpNode.isVisited = true;
+                if(!tmpVertex.isVisited){
+                    result.add(tmpVertex.content);
+                    tmpVertex.isVisited = true;
 
-                    if(!tmpNode.edges.isEmpty()) {
-                        for(Edge<E, V> edge : tmpNode.edges) {
+                    if(!tmpVertex.edges.isEmpty()) {
+                        for(Edge<E, V> edge : tmpVertex.edges) {
                             queue.offer(edge.target);
                         }
                     }
@@ -208,26 +226,26 @@ public class ALGraph<V extends Comparable<V>, E> {
         return result;
     }
 
-    public List<V> dfsPrivate(V vertex) {
+    public LinkedList<V> dsfPrivate(V vertex) {
 
-        List<V> result = new LinkedList<>();
-        Node<V, E> source = this.getNode(vertex);
+        LinkedList<V> result = new LinkedList<>();
+        Vertex<V, E> source = this.getVertex(vertex);
 
         if (source != null) {
 
-            Deque<Node<V, E>> stack = new ArrayDeque<>();
+            Deque<Vertex<V, E>> stack = new ArrayDeque<>();
             stack.push(source);
 
             while(!stack.isEmpty()) {
 
-                Node<V, E> tmpNode = stack.pop();
+                Vertex<V, E> tmpVertex = stack.pop();
 
-                if (!tmpNode.isVisited) {
-                    result.add(tmpNode.content);
-                    tmpNode.isVisited = true;
+                if (!tmpVertex.isVisited) {
+                    result.add(tmpVertex.content);
+                    tmpVertex.isVisited = true;
 
-                    if (!tmpNode.edges.isEmpty()) {
-                        for (Edge<E, V> edge : tmpNode.edges) {
+                    if (!tmpVertex.edges.isEmpty()) {
+                        for (Edge<E, V> edge : tmpVertex.edges) {
                             stack.push(edge.target);
                         }
                     }

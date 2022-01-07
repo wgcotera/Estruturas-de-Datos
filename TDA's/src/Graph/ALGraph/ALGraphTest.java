@@ -1,23 +1,22 @@
 package Graph.ALGraph;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public class ALGraphTest {
     public static void main(String[] args) {
         ALGraph<String, String> test = new ALGraph<>();
-        test.addVertex("Alexander").addVertex("Alina").addVertex("Juan").addVertex("Genaro").addVertex("Steven").addVertex("Eliana").addVertex("Gia").addVertex("Maria").addVertex("Anabel");
-        test.addEdge("Alexander", "Alina");
-        test.addEdge("Alina", "Genaro");
-        test.addEdge("Alexander", "Juan");
-        test.addEdge("Juan", "Steven");
-        test.addEdge("Alina", "Eliana");
-        test.addEdge("Alexander", "Gia");
-        test.addEdge("Maria", "Anabel");
-        List<String> result = test.bfs("Alexander");
+        test.addVertex("Alex").addVertex("Alina").addVertex("Juan A").addVertex("Genaro").addVertex("Steven").addVertex("Eliana").addVertex("Gia");
+        test.addEdge("Alex", "Alina", 9, "novios");
+        test.addEdge("Alina", "Genaro",8, "amigos");
+        test.addEdge("Alex", "Juan A", 7, "amigos");
+        test.addEdge("Juan A", "Steven", 6, "compañeros");
+        test.addEdge("Alina", "Eliana", 5, "amigas");
+        test.addEdge("Juan", "Genaro", 4, "amigos");
+//        test.addEdge("Maria", "Anabel", 3, "familia");
+        List<String> result = test.BSF("Alex");
         System.out.println(result.toString());
 
-        List<String> result1 = test.dfs("Alexander");
+        List<String> result1 = test.DSF("Alex");
         System.out.println(result1.toString());
 
         System.out.println(test.isRelated());
