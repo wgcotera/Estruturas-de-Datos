@@ -13,10 +13,10 @@ public class ALGraphTest {
         test.addEdge("Alina", "Eliana", 5, "amigas");
         test.addEdge("Juan", "Genaro", 4, "amigos");
 //        test.addEdge("Maria", "Anabel", 3, "familia");
-        List<String> result = test.BSF("Alex");
+        List<String> result = test.BFS("Alex");
         System.out.println(result.toString());
 
-        List<String> result1 = test.DSF("Alex");
+        List<String> result1 = test.DFS("Alex");
         System.out.println(result1.toString());
 
         System.out.println(test.isRelated());
