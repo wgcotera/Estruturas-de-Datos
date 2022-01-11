@@ -1,6 +1,8 @@
 package Graph.ALGraph;
 
 
+import jdk.swing.interop.SwingInterOpUtils;
+
 import java.util.*;
 
 public class ALGraph<V extends Comparable<V>, E> {
@@ -101,17 +103,21 @@ public class ALGraph<V extends Comparable<V>, E> {
     }
 
     // Agrega una conneccion entre dos vertices vertex1 y vertex2
-    public void addEdge(V vertex1, V vertex2, int weight, E data) {
+    public void addEdge(V source, V target, int weight, E data) {
 
-        Vertex<V, E> source = this.getVertex(vertex1);
-        Vertex<V, E> target = this.getVertex(vertex2);
+        Vertex<V, E> sourceV = this.getVertex(source);
+        Vertex<V, E> targetv = this.getVertex(target);
 
-        if (source != null && target != null && !this.containEdge(source, target, weight, data)) {
-            source.edges.add(new Edge<>(source, target, weight, data));
+        if (sourceV != null && targetv != null && !this.containEdge(sourceV, targetv, weight, data)) {
+            sourceV.edges.add(new Edge<>(sourceV, targetv, weight, data));
             if (!this.isDirected) {
-                target.edges.add(new Edge<>(source, target, weight, data));
+                targetv.edges.add(new Edge<>(sourceV, targetv, weight, data));
             }
         }
+    }
+
+    public void addEdge(V source, V target) {
+        this.addEdge(source, target, 1, null);
     }
 
     // Remueve una coneccion especifica entre los vertices vertex1 y vertex2
@@ -170,9 +176,9 @@ public class ALGraph<V extends Comparable<V>, E> {
         this.resetIsVisited();
         return result;
     }
-
+    //PARA GRAFOS NO DIRIGIDOS
     // Devuelve una lista con todas las componentes conexas del grafo.
-    public List<List<V>> relatedComponents() {
+    public List<List<V>> connectedComponents() {
         List<List<V>> paths = new LinkedList<>();
         for (Vertex<V, E> vertex : this.nodes) {
             if (!vertex.isVisited) {
@@ -182,15 +188,62 @@ public class ALGraph<V extends Comparable<V>, E> {
         this.resetIsVisited();
         return paths;
     }
-
+    //PARA GRAFOS NO DIRIGIDOS
     // Devuelve verdadero si es grafo es conexo
-    public boolean isRelated() {
-        return this.relatedComponents().size() == 1;
+    public boolean isConnected() {
+        return this.connectedComponents().size() == 1;
+    }
+
+    //PARA GRAFOS DIRIGIDOS
+    public List<Set<V>> stronglyConnectedComponents() {
+        List<Set<V>> result = new LinkedList<>();
+        ALGraph<V, E> reverseGraph = this.reverse();
+
+        for(Vertex<V, E> v : this.nodes) {
+            if (!v.isVisited) {
+                Set<V> A = this.getTargetsOf(v.content);
+                Set<V> D = reverseGraph.getTargetsOf(v.content);
+
+                System.out.println("\n"+ "N = " + A);
+                System.out.println("R = " +D);
+                if (D != null && A != null) {
+                    D.retainAll(A);
+                    result.add(D);
+                    this.nodes.stream().filter(vertex -> D.contains(vertex.content)).forEach(vertex -> vertex.isVisited = true);
+                }
+                System.out.println("strongly Connected Component " +D);
+            }
+        }
+        this.resetIsVisited();
+        return result;
+    }
+
+    public  boolean isStronglyConnected() {
+        return this.stronglyConnectedComponents().size() == 1;
     }
 
     /* *********************************************************************
      * Private Methods
      ******************************************************************** */
+
+    private Set<V> getTargetsOf(V vertex) {
+        Vertex<V, E> source = this.getVertex(vertex);
+        if(source == null) {
+            return null;
+        }
+        Set<V> result = new LinkedHashSet<>(this.DFS(vertex));
+        return result;
+    }
+    private ALGraph<V, E> reverse() {
+        ALGraph<V, E> result = new ALGraph<>(true);
+
+        this.nodes.forEach(v -> result.addVertex(v.content));
+
+        this.nodes.forEach(v -> v.edges
+                        .forEach(e -> result.addEdge(e.target.content, e.source.content, e.weight, e.data)));
+
+        return result;
+    }
 
     private boolean vertexEquals(V vertex1, V vertex2) {
         return vertex1 != null && vertex2 != null && this.comparator.compare(vertex1, vertex2) == 0;
