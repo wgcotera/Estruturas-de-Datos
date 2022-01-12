@@ -31,10 +31,7 @@ public class ALGraphTest {
         test1.addEdge("H", "B");
         test1.addEdge("H", "F");
 
-        System.out.println(test1.isStronglyConnected());
-
-
-
-
+        System.out.println("*".repeat(100));
+        System.out.println("\n\n"+test1.isStronglyConnected());
     }
 }

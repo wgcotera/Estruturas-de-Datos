@@ -1,8 +1,6 @@
 package Graph.ALGraph;
 
 
-import jdk.swing.interop.SwingInterOpUtils;
-
 import java.util.*;
 
 public class ALGraph<V extends Comparable<V>, E> {
@@ -106,12 +104,12 @@ public class ALGraph<V extends Comparable<V>, E> {
     public void addEdge(V source, V target, int weight, E data) {
 
         Vertex<V, E> sourceV = this.getVertex(source);
-        Vertex<V, E> targetv = this.getVertex(target);
+        Vertex<V, E> targetV = this.getVertex(target);
 
-        if (sourceV != null && targetv != null && !this.containEdge(sourceV, targetv, weight, data)) {
-            sourceV.edges.add(new Edge<>(sourceV, targetv, weight, data));
+        if (sourceV != null && targetV != null && !this.containEdge(sourceV, targetV, weight, data)) {
+            sourceV.edges.add(new Edge<>(sourceV, targetV, weight, data));
             if (!this.isDirected) {
-                targetv.edges.add(new Edge<>(sourceV, targetv, weight, data));
+                targetV.edges.add(new Edge<>(targetV, sourceV, weight, data));
             }
         }
     }
@@ -165,14 +163,14 @@ public class ALGraph<V extends Comparable<V>, E> {
 
     // Recorre el grafo en anchura y devuelve una lista con los elementos ordenados segun el recorrido.
     public List<V> BFS(V vertex) {
-        List<V> result = this.bsfPrivate(vertex);
+        List<V> result = this.bfsPrivate(vertex);
         this.resetIsVisited();
         return result;
     }
 
     // Recorre el grafo en profundidad y devuelve una lista con los elementos ordenados segun el recorrido.
     public List<V> DFS(V vertex) {
-        List<V> result = this.dsfPrivate(vertex);
+        List<V> result = this.dfsPrivate(vertex);
         this.resetIsVisited();
         return result;
     }
@@ -182,7 +180,7 @@ public class ALGraph<V extends Comparable<V>, E> {
         List<List<V>> paths = new LinkedList<>();
         for (Vertex<V, E> vertex : this.nodes) {
             if (!vertex.isVisited) {
-                paths.add(this.bsfPrivate(vertex.content));
+                paths.add(this.bfsPrivate(vertex.content));
             }
         }
         this.resetIsVisited();
@@ -195,6 +193,7 @@ public class ALGraph<V extends Comparable<V>, E> {
     }
 
     //PARA GRAFOS DIRIGIDOS
+    // Devuelve una lista con todas las componentes fuertemente conexas del grafo
     public List<Set<V>> stronglyConnectedComponents() {
         List<Set<V>> result = new LinkedList<>();
         ALGraph<V, E> reverseGraph = this.reverse();
@@ -209,7 +208,7 @@ public class ALGraph<V extends Comparable<V>, E> {
                 if (D != null && A != null) {
                     D.retainAll(A);
                     result.add(D);
-                    this.nodes.stream().filter(vertex -> D.contains(vertex.content)).forEach(vertex -> vertex.isVisited = true);
+                    D.forEach(c -> this.getVertex(c).isVisited = true);
                 }
                 System.out.println("strongly Connected Component " +D);
             }
@@ -217,7 +216,8 @@ public class ALGraph<V extends Comparable<V>, E> {
         this.resetIsVisited();
         return result;
     }
-
+    //PARA GRAFOS DIRIGIDOS
+    // Devuelve verdadero si es grafo es fuertemente conexo
     public  boolean isStronglyConnected() {
         return this.stronglyConnectedComponents().size() == 1;
     }
@@ -231,9 +231,9 @@ public class ALGraph<V extends Comparable<V>, E> {
         if(source == null) {
             return null;
         }
-        Set<V> result = new LinkedHashSet<>(this.DFS(vertex));
-        return result;
+        return new LinkedHashSet<>(this.DFS(vertex));
     }
+
     private ALGraph<V, E> reverse() {
         ALGraph<V, E> result = new ALGraph<>(true);
 
@@ -292,13 +292,14 @@ public class ALGraph<V extends Comparable<V>, E> {
         return false;
     }
 
+    //Regresa el estado de los vertices "isVisited" a falso
     private void resetIsVisited() {
         for(Vertex<V, E> vertex : nodes) {
             vertex.isVisited = false;
         }
     }
 
-    private  List<V> bsfPrivate(V vertex) {
+    private  List<V> bfsPrivate(V vertex) {
 
         List<V> result = new LinkedList<>();
         Vertex<V, E> source = this.getVertex(vertex);
@@ -327,7 +328,7 @@ public class ALGraph<V extends Comparable<V>, E> {
         return result;
     }
 
-    public List<V> dsfPrivate(V vertex) {
+    public List<V> dfsPrivate(V vertex) {
 
         List<V> result = new LinkedList<>();
         Vertex<V, E> source = this.getVertex(vertex);
