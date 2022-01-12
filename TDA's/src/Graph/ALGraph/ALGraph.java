@@ -200,16 +200,16 @@ public class ALGraph<V extends Comparable<V>, E> {
 
         for(Vertex<V, E> v : this.nodes) {
             if (!v.isVisited) {
-                Set<V> A = this.getTargetsOf(v.content);
-                Set<V> D = reverseGraph.getTargetsOf(v.content);
+                Set<V> A = new LinkedHashSet<>(this.BFS(v.content));
+                Set<V> D = new LinkedHashSet<>(reverseGraph.BFS(v.content));
 
                 System.out.println("\n"+ "N = " + A);
                 System.out.println("R = " +D);
-                if (D != null && A != null) {
-                    D.retainAll(A);
-                    result.add(D);
-                    D.forEach(c -> this.getVertex(c).isVisited = true);
-                }
+
+                D.retainAll(A);
+                result.add(D);
+                result.forEach(s -> s.forEach(c -> this.getVertex(c).isVisited = true));
+
                 System.out.println("strongly Connected Component " +D);
             }
         }
@@ -225,14 +225,6 @@ public class ALGraph<V extends Comparable<V>, E> {
     /* *********************************************************************
      * Private Methods
      ******************************************************************** */
-
-    private Set<V> getTargetsOf(V vertex) {
-        Vertex<V, E> source = this.getVertex(vertex);
-        if(source == null) {
-            return null;
-        }
-        return new LinkedHashSet<>(this.DFS(vertex));
-    }
 
     private ALGraph<V, E> reverse() {
         ALGraph<V, E> result = new ALGraph<>(true);
