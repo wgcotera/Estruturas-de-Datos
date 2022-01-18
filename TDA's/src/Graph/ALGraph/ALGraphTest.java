@@ -1,7 +1,5 @@
 package Graph.ALGraph;
 
-import java.util.List;
-
 public class ALGraphTest {
     public static void main(String[] args) {
 //        ALGraph<String, String> test = new ALGraph<>(true);
@@ -21,17 +19,28 @@ public class ALGraphTest {
 
 
 
-        ALGraph<String, Integer> test1 = new ALGraph<>(true);
-        test1.addVertex("B").addVertex("S").addVertex("C").addVertex("F").addVertex("H");
-        test1.addEdge("B", "S");
-        test1.addEdge("C", "B");
-        test1.addEdge("F", "C");
-        test1.addEdge("F", "S");
-        test1.addEdge("S", "C");
-        test1.addEdge("H", "B");
-        test1.addEdge("H", "F");
+        ALGraph<String, Integer> grafo = new ALGraph<>(true);
+        grafo.addVertex("V1");
+        grafo.addVertex("V2");
+        grafo.addVertex("V3");
+        grafo.addVertex("V4");
+        grafo.addVertex("V5");
+        grafo.addVertex("V6");
 
-        System.out.println("*".repeat(100));
-        System.out.println("\n\n"+test1.isStronglyConnected());
+        grafo.addEdge("V1", "V2", 3, null);
+        grafo.addEdge("V1", "V3", 4, null);
+        grafo.addEdge("V1", "V5", 8, null);
+        grafo.addEdge("V2", "V5", 5, null);
+        grafo.addEdge("V3", "V5", 3, null);
+        grafo.addEdge("V5", "V4", 7, null);
+        grafo.addEdge("V5", "V6", 3, null);
+        grafo.addEdge("V6", "V4", 2, null);
+
+        System.out.println("*****************GRAFO IMPRESO EN ANCHURA*****************");
+        grafo.printBFS();
+        System.out.println("\n\n*****************GRAFO IMPRESO EN PROFUNDIDAD*****************");
+        grafo.printDFS();
+        System.out.println("\n\n*****************COMPONENTES CONEXAS*****************");
+        System.out.println(grafo.connectedComponents());
     }
 }

@@ -27,10 +27,6 @@ public class ALGraph<V extends Comparable<V>, E> {
         public String toString() {
             return content.toString();
         }
-
-        private void printVertex() {
-            System.out.println("{ source = " + this + " }");
-        }
     }
 
     private class Edge<E, V extends Comparable<V>> {
@@ -50,9 +46,9 @@ public class ALGraph<V extends Comparable<V>, E> {
             this(source, target,1, null);
         }
 
-        private void printEdge() {
-            System.out.printf("{ source = %s \t target = %s \t weight = %d \t data = %s }\n",
-                                        source.toString(), target.toString(), weight, data.toString());
+        @Override
+        public String toString(){
+            return String.format("{ %s,  %s, %d, %s }", source, target, weight, data);
         }
     }
 
@@ -69,7 +65,7 @@ public class ALGraph<V extends Comparable<V>, E> {
      * Constructors
      ******************************************************************** */
 
-    public ALGraph(boolean isDirected,  Comparator<V> comparator) {
+    public ALGraph(boolean isDirected, Comparator<V> comparator) {
         this.vertices = 0;
         this.isDirected = isDirected;
         this.nodes = new LinkedList<>();
@@ -80,13 +76,20 @@ public class ALGraph<V extends Comparable<V>, E> {
         this(isDirected, Comparator.naturalOrder());
     }
     public ALGraph(Comparator<V> comparator) {this(false, comparator);}
-    public  ALGraph() {
+    public ALGraph() {
         this(false, Comparator.naturalOrder());
     }
 
     /* *********************************************************************
      * Public Methods
      ******************************************************************** */
+
+//    public Map<V, Integer> dijstra(V vertex) {
+//        Vertex<V, E> source = this.getVertex(vertex);
+//        if (source == null || !this.isDirected) return null;
+//
+//        List<Integer> D = new ArrayList<>();
+//    }
 
     public int countVertices() {
         return this.vertices;
@@ -174,6 +177,19 @@ public class ALGraph<V extends Comparable<V>, E> {
         this.resetIsVisited();
         return result;
     }
+
+    // Imprime los vertices del grafo (partiendo del primer vertice add) por anchura
+    public void printBFS() {
+        System.out.println(this.BFS(this.nodes.get(0).content));
+    }
+
+
+
+    // Imprime los vertices del grafo (partiendo del primer vertice add) por anchura
+    public void printDFS() {
+        System.out.println(this.DFS(this.nodes.get(0).content));
+    }
+
     //PARA GRAFOS NO DIRIGIDOS
     // Devuelve una lista con todas las componentes conexas del grafo.
     public List<List<V>> connectedComponents() {
