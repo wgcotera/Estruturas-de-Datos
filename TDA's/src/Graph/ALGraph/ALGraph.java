@@ -84,12 +84,54 @@ public class ALGraph<V extends Comparable<V>, E> {
      * Public Methods
      ******************************************************************** */
 
-//    public Map<V, Integer> dijstra(V vertex) {
-//        Vertex<V, E> source = this.getVertex(vertex);
-//        if (source == null || !this.isDirected) return null;
-//
-//        List<Integer> D = new ArrayList<>();
-//    }
+    private void dijkstra(V vertex) {
+        Vertex<V, E> start = this.getVertex(vertex);
+
+        if (start == null) return; //early exit
+
+        Queue<Vertex<V, E>> vertices = new PriorityQueue<>(Comparator.comparing((Vertex<V, E> v) -> v.distance));
+
+        start.distance = 0;
+        vertices.offer(start);
+
+        while(!vertices.isEmpty()) {
+            Vertex<V, E> current = vertices.poll();
+            current.isVisited = true;
+
+            for(Edge<E, V> e : current.edges) {
+                Vertex<V, E> target = e.target;
+                if (!target.isVisited) {
+                    int dist = e.weight + current.distance;
+                    if (dist < target.distance) {
+                        vertices.offer(target);
+                        target.predecesor = current;
+                        target.distance = dist;
+                    }
+                }
+            }
+        }
+    }
+
+    public Map<V, Integer> shortestPath(V source, V target) {
+
+        Vertex<V, E> vSource = this.getVertex(source);
+        Vertex<V, E> vTarget = this.getVertex(target);
+        if (vSource == null || vTarget == null) return null;
+
+        this.dijkstra(source);
+
+        Map<V, Integer> result = new LinkedHashMap<>();
+        Vertex<V, E> pre = vTarget;
+
+        while (pre.predecesor != null) {
+            result.put(pre.content, pre.distance);
+            pre = pre.predecesor;
+        }
+
+        this.resetIsVisited();
+
+        return result;
+    }
 
     public int countVertices() {
         return this.vertices;

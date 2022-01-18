@@ -158,7 +158,6 @@ public class AMGraph<V extends Comparable<V>> {
         }
     }
 
-
     public int[][] floydWarshall() {
         int[][] A = this.matrix.clone();
         for (int i = 0 ; i < size ; i++) { //Recorro cada vertice
