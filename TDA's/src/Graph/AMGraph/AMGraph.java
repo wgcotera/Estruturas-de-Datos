@@ -159,6 +159,35 @@ public class AMGraph<V extends Comparable<V>> {
     }
 
 
+    public int[][] floydWarshall() {
+        int[][] A = this.matrix.clone();
+        for (int i = 0 ; i < size ; i++) { //Recorro cada vertice
+            for (int m = 0 ; m < size ; m++) { //Recorro cada fila
+                for (int n = 0 ; n < size ; n++) { // Recorro cada columna de la fila.
+                    A[m][n] = Math.min(A[m][n], A[m][i] + A[i][n]);
+                }
+            }
+        }
+        return A;
+    }
+
+    public boolean[][] warshall() {
+        boolean[][] A =  new boolean[this.size][this.size];
+        for (int x = 0 ; x < this.size ; x++) {
+            for (int y = 0 ; y < this.size ; y++) {
+                A[x][y] = this.matrix[x][y] != DEFAULT_MATRIX_VALUE;
+            }
+        }
+        for (int i = 0 ; i < size ; i++) { //Recorro cada vertice
+            for (int m = 0 ; m < size ; m++) { //Recorro cada fila
+                for (int n = 0 ; n < size ; n++) { // Recorro cada columna de la fila.
+                    A[m][n] = A[m][n] || (A[m][i] && A[i][n]);
+                }
+            }
+        }
+        return A;
+    }
+
     /* *********************************************************************
      * Private Methods
      ******************************************************************** */
